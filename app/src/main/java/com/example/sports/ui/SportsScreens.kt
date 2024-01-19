@@ -16,6 +16,7 @@
 
 package com.example.sports.ui
 
+import android.app.Activity
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -57,6 +58,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
@@ -91,11 +93,13 @@ fun SportsApp(
 
     Scaffold(
         topBar = {
+            if(contentType == SportsContentType.ListOnly) {
             SportsAppBar(
                 isShowingListPage = uiState.isShowingListPage,
                 contentType = contentType,
                 onBackButtonClick = { viewModel.navigateToListPage() },
             )
+        }
         }
     ) { innerPadding ->
         if (contentType == SportsContentType.ListAndDetail) {
@@ -108,15 +112,16 @@ fun SportsApp(
                     },
                     contentPadding = innerPadding,
                     modifier = Modifier
-                        .padding(dimensionResource (R.dimen.padding_medium))
+                        .padding(horizontal = dimensionResource(R.dimen.padding_medium))
                         .weight(1f)
                 )
 
+                val activity = (LocalContext.current as? Activity)
                 SportsDetail(
                     selectedSport = uiState.currentSport,
-                    contentPadding = innerPadding,
+                    contentPadding = PaddingValues(0.dp),
                     onBackPressed = {
-                        viewModel.navigateToListPage()
+                        activity?.finish()
                     },
                     modifier = Modifier.weight(1f)
                 )
